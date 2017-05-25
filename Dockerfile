@@ -1,5 +1,5 @@
 # docker build -t mdtotufte .
-# docker run -it -v `pwd`:/data mdtotufte /bin/bash -c "git pull && cd /data && tuftebook --files /data/posts && useradd $USER && chown -R $USER:$USER public/"
+# docker run -it -v `pwd`:/data mdtotufte /bin/bash -c "cd /data && tuftebook --files examples/chapters --images examples/images && useradd $USER && chown -R $USER:$USER public/"
 FROM phusion/baseimage:0.9.22
 
 # Use baseimage-docker's init system.
