@@ -1,10 +1,12 @@
 # docker build -t mdtotufte .
 # docker run -it -v `pwd`:/data mdtotufte /bin/bash -c "git pull && cd /data && tuftebook --files /data/posts && useradd $USER && chown -R $USER:$USER public/"
+FROM phusion/baseimage:0.9.22
 
-FROM ubuntu:16.04
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
 
+# ...put your own build instructions here...
 RUN apt-get update
-RUN apt-get -y upgrade
 RUN apt-get install -y git wget
 
 # Install pandoc
@@ -22,3 +24,8 @@ RUN python3 -m pip install maya toml
 RUN git clone https://github.com/schollz/book.git
 WORKDIR book
 RUN python3 setup.py install
+
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+
