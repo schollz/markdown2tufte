@@ -5,7 +5,7 @@ slug = "chapter-3-the-eye"
 
 ---
 
-# Ore vicerat sceleri
+# Chapter 3
 
 ## Qui vellem captum fixit
 
@@ -14,6 +14,10 @@ aethera](http://dividuaeat.io/) querenda fit mota per alumnae cernit; tam quem
 herbis, adero. Videres amat quae plebis concita ab victo porrexit exsistunt
 dolore, post ferus quo levis debita solutis. Admoto stabat quoque nam quod
 miratur latarumque vivere.
+
+
+![Vanessa indica, Indian Red Admiral, is a butterfly found in the higher altitude regions of India.](butterfly.jpg)
+
 
 ## Claudor amplectitur exitio natis mortisque fulmina illic
 

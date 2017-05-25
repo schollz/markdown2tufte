@@ -61,6 +61,8 @@ def markdown_to_html(mdown):
                           t, 'rt', encoding='latin1').read()
     os.remove('%(tempfile)s.html' % t)
     os.remove('%(tempfile)s.md' % t)
+    # Modify image links
+    processed_html = processed_html.replace('img src="','img src="/assets/img/')
     return processed_html
 
 
@@ -144,7 +146,7 @@ sudo mv pandoc-sidenote /usr/local/bin
 
     # Resize images
     os.chdir("public/assets/img")
-    os.system("mogrify -filter Triangle -define filter:support=2 -dither None -posterize 136 -quality 75 -define jpeg:fancy-upsampling=off -define png:compression-filter=5 -define png:compression-level=9 -define png:compression-strategy=1 -define png:exclude-chunk=all -interlace none -resize 450x337\> *")
+    os.system("mogrify -filter Triangle -define filter:support=2 -dither None -posterize 136 -quality 60 -define jpeg:fancy-upsampling=off -define png:compression-filter=5 -define png:compression-level=9 -define png:compression-strategy=1 -define png:exclude-chunk=all -interlace none -resize 800x600\> *")
     os.chdir("../../../")
 
 

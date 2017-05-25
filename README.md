@@ -21,17 +21,23 @@ sudo mv pandoc-sidenote /usr/local/bin
 
 Follow [these instructions](https://github.com/jez/pandoc-sidenote) if you don't want to run this binary.
 
-### Install Python requirements
+### Install `imagemagick`
 
 ```
-pip install -r requirements.txt
+apt-get install imagemagick
+```
+
+### Install 
+
+```
+pip install tuftebook
 ```
 
 ## Setup
 
-Make some markdown files and put them in `chapters/`.
+Make some markdown files and put them in some folder, e.g. `examples/chapters/`.
 
-The top of the markdown should have some TOML data, e.g.
+The top of the markdown should have some TOML data:
 
 ```
 title = "Title that will be shown on index"
@@ -47,5 +53,15 @@ slug = "optional-custom-slug"
 ## Run 
 
 ```
-python generate.py
+tuftebook --files examples/chapter --images examples/images
 ```
+
+Now you have a static site in the `public/` folder with your website.
+
+## Acknowledgements
+
+This would not exist without:
+
+- [pandoc-sidenote by jez](https://github.com/jez/pandoc-sidenote)
+- [tufte-pandoc-css by jez](https://github.com/jez/tufte-pandoc-css)
+- [pandoc](http://pandoc.org/)
