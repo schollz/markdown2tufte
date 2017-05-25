@@ -6,6 +6,12 @@ draft = false
 
 # Chapter 1
 
+This website generated with
+
+```
+tuftebook --files examples/chapters --images examples/images --url https://schollz.github.io/book
+```
+
 ## Senilis ait pennis
 
 
