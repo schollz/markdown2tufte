@@ -1,10 +1,3 @@
-title = "Chapter 3"
-date_created = "November 4th 2016"
-draft = false
-slug = "chapter-3-the-eye"
-
----
-
 # Chapter 3
 
 ## Qui vellem captum fixit

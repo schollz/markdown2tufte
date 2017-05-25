@@ -1,0 +1,31 @@
+# INDEX PAGE # 
+title = "Markdown To Tufte"
+subtitle = "*The point of the essay is to change things.* - Edward Tufte"
+baseurl = ""
+
+# PATHS #
+
+# Path to all images
+images = "images"
+# Path to all markdown
+files = "chapters"
+
+# POSTS #
+
+# Posts sorted the order they will appear 
+[[post]]
+filename = "chapter1.md"
+title = "Chapter 1"
+subtitle = "November 1st, 2017"
+
+[[post]]
+filename = "chapter2.md"
+title = "Chapter 2"
+subtitle = "November 1st, 2017"
+
+[[post]]
+filename = "chapter3.md"
+title = "Chapter 3"
+subtitle = "November 1st, 2017"
+slug = "the-last-chapter/final"
+

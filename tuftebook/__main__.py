@@ -31,26 +31,8 @@ def which(program):
     raise
 
 
-def process_chapter_file(chapter_filename):
-    chapter = {}
-    chapter_content = open(chapter_filename, 'rb').read().decode('utf-8')
-    front_matter, markdown_content = chapter_content.split("---", maxsplit=1)
-    chapter = toml.loads(front_matter)
-    if 'slug' not in chapter:
-        chapter['slug'] = os.path.basename(chapter_filename).split(".")[0]
-    if chapter['slug'][0] == "/":
-        chapter['slug'] = chapter['slug'][1:]
-    chapter['date_created_rfc3339'] = maya.parse(
-        chapter['date_created']).rfc3339()
-    chapter['python_date'] = datetime.strptime(
-        chapter['date_created_rfc3339'], '%Y-%m-%dT%H:%M:%S.%fZ')
-    chapter['date_created'] = chapter['python_date'].strftime('%b %d %y')
-    chapter['markdown'] = markdown_content
-    return chapter
-
-
-def markdown_to_html(mdown,baseurl):
-    t = {'baseurl':baseurl,'tempfile': ''.join(random.choice(
+def markdown_to_html(mdown, baseurl):
+    t = {'baseurl': baseurl, 'tempfile': ''.join(random.choice(
         string.ascii_uppercase + string.digits) for _ in range(10))}
     with open('%(tempfile)s.md' % t, 'w') as f:
         f.write(mdown)
@@ -62,16 +44,17 @@ def markdown_to_html(mdown,baseurl):
     os.remove('%(tempfile)s.html' % t)
     os.remove('%(tempfile)s.md' % t)
     # Modify image links
-    processed_html = processed_html.replace('img src="','img src="%s/assets/img/' % baseurl)
+    processed_html = processed_html.replace(
+        'img src="', 'img src="%s/assets/img/' % baseurl)
     return processed_html
 
 
-def run(files, images, baseurl):
+def run(config_file):
     try:
         pandoc = which("pandoc")
     except:
-        print("""pandoc not found, install with 
-        
+        print("""pandoc not found, install with
+
 wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb
 dpgk --install pandoc-1.18-1-amd64.deb
 """)
@@ -80,13 +63,15 @@ dpgk --install pandoc-1.18-1-amd64.deb
     try:
         pandoc = which("pandoc-sidenote")
     except:
-        print("""pandoc-sidenote not found, install with 
-        
+        print("""pandoc-sidenote not found, install with
+
 wget https://github.com/schollz/pandoc-sidenote/releases/download/v1.0/pandoc-sidenote
 chmod +x pandoc-sidenote
 sudo mv pandoc-sidenote /usr/local/bin
 """)
         return
+
+    config = toml.load(open(config_file, 'r'))
 
     this_dir, this_filename = os.path.split(__file__)
 
@@ -97,53 +82,55 @@ sudo mv pandoc-sidenote /usr/local/bin
     shutil.copytree(os.path.join(this_dir, 'assets'), 'public/assets')
     if not os.path.isdir("public/assets/img"):
         os.mkdir("public/assets/img")
-    shutil.copyfile(os.path.join(this_dir, 'tufte.html5'), 'tufte.html5')
+    if not os.path.isfile('tufte.html5'):
+        shutil.copyfile(os.path.join(this_dir, 'tufte.html5'), 'tufte.html5')
 
-    if images != '' and images != None:
-        image_files = os.listdir(images)
+    if config['images'] != '':
+        image_files = os.listdir(config['images'])
         for f in image_files:
-            shutil.copyfile(os.path.join(images,f), os.path.join("public","assets","img",os.path.basename(f)))
+            shutil.copyfile(os.path.join(config['images'], f), os.path.join(
+                "public", "assets", "img", os.path.basename(f)))
 
-
-    chapter_filenames = glob.glob(os.path.join(files, "*.md"))
-    chapters = []
-    for chapter_filename in chapter_filenames:
-        chapter = process_chapter_file(chapter_filename)
-        chapter['baseurl'] = baseurl
-        chapters.append((chapter['python_date'], chapter))
-
-    sorted_chapters = list(sorted(chapters, key=lambda tup: tup[0], reverse=False))
-    for i, sorted_chapter in enumerate(sorted_chapters):
-        chapter = sorted_chapter[1]
-        slug_path = os.path.join("public", chapter['slug'])
+    # Pre-processing of the posts
+    for i, post in enumerate(config['post']):
+        # Process slug
+        if 'slug' not in post:
+            post['slug'] = post['filename'].split('.')
+        if post['slug'][0] == '/':
+            post['slug'] = post['slug'][1:]
+        if post['slug'][-1] == '/':
+            post['slug'] = post['slug'][:-1]
+        slug_path = os.path.join("public", post['slug'])
         if not os.path.isdir(slug_path):
             print("Making", slug_path)
             os.makedirs(slug_path)
-        markdown_content = chapter['markdown']
+        post['baseurl'] = config['baseurl']
+
+    index_markdown = ""
+    index_markdown += "# %s\n\n" % config['title']
+    index_markdown += "## %s\n\n" % config['subtitle']
+    current_subtitle = ""
+    for i, post in enumerate(config['post']):
+        current_subtitle, post['subtitle'] = post['subtitle'], current_subtitle
+        index_markdown += "\n\n<i>%(subtitle)s</i><h2>[%(title)s](%(baseurl)s/%(slug)s/)</h2>" % post
+
+        markdown_content = open(os.path.join(
+            config['files'], post['filename']), 'r').read()
         pagination = "### Keep reading...\n\n"
         if i > 0:
-            pagination += '&#x21AB;&nbsp;“<i><a href="%(baseurl)s/%(slug)s/">%(title)s</a></i>”' % (sorted_chapters[i-1][1])            
+            pagination += '&#x21AB;&nbsp;“<i><a href="%(baseurl)s/%(slug)s/">%(title)s</a></i>”' % (
+                config['post'][i - 1])
         pagination += "&nbsp;&nbsp;&nbsp;<a href='/'>Home</a>&nbsp;&nbsp;&nbsp;"
-        if i < len(chapters)-1:
-            pagination += '“<i><a href="%(baseurl)s/%(slug)s/">%(title)s</a></i>”&nbsp;&#x21AC;' % (sorted_chapters[i+1][1])
+        if i < len(config['post']) - 1:
+            pagination += '“<i><a href="%(baseurl)s/%(slug)s/">%(title)s</a></i>”&nbsp;&#x21AC;' % (
+                config['post'][i + 1])
         markdown_content += "\n\n" + pagination.strip()
-        with open(os.path.join(slug_path, "index.html"), "w") as f:
-            f.write(markdown_to_html(markdown_content,baseurl))
+        with open(os.path.join(os.path.join("public", post["slug"]), "index.html"), "w") as f:
+            f.write(markdown_to_html(markdown_content, config['baseurl']))
 
-    # Generate index
-    index_markdown = ""
-    index_markdown += "# Title\n\n"
-    index_markdown += "## Byline\n\n"
-    last_date = ""
-    for i, t in enumerate(sorted(chapters, key=lambda tup: tup[0], reverse=False)):
-        t[1]['date'] = last_date
-        t[1]['baseurl'] = baseurl
-        index_markdown += "\n\n<i>%(date)s</i>\t<h2>[%(title)s](%(baseurl)s/%(slug)s)</h2>" % t[
-            1]
-        last_date = t[1]['date_created']
-    index_markdown += "\n\n<i>%s</i>\t<h2>&nbsp;</h2>" % last_date
+    index_markdown += "\n\n<i>%s</i><h2>&nbsp;</h2>" % current_subtitle
     with open(os.path.join("public", "index.html"), "wt", encoding='latin1') as f:
-        f.write(markdown_to_html(index_markdown,baseurl))
+        f.write(markdown_to_html(index_markdown, config['baseurl']))
     os.remove('tufte.html5')
 
     # Resize images
@@ -154,16 +141,13 @@ sudo mv pandoc-sidenote /usr/local/bin
 
 def main():
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--files',  help='folder to files')
-    parser.add_argument('--images', help='folder to the images')
-    parser.add_argument('--url', help='baseurl')
-
+    parser.add_argument('--config',  help='config file to use')
 
     args = parser.parse_args()
-    if args.files == None:
-        print("Must specify where markdown files are, with\n\n--files location/to/markdown/files")
-    if args.url == None:
-       args.url = ''
-    elif args.url[-1] == '/':
-       args.url = args.url[:-1]
-    run(args.files, args.images, args.url)
+    if args.config == None:
+        print("Must specify config file")
+        return
+    run(args.config)
+
+if __name__ == "__main__":
+    run('config.toml')

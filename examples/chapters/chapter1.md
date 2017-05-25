@@ -1,9 +1,3 @@
-title = "Chapter 1"
-date_created = "November 2 2015"
-draft = false
-
----
-
 # Chapter 1
 
 This website generated with
