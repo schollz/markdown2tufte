@@ -49,12 +49,12 @@ def process_chapter_file(chapter_filename):
     return chapter
 
 
-def markdown_to_html(mdown):
-    t = {'tempfile': ''.join(random.choice(
+def markdown_to_html(mdown,baseurl):
+    t = {'baseurl':baseurl,'tempfile': ''.join(random.choice(
         string.ascii_uppercase + string.digits) for _ in range(10))}
     with open('%(tempfile)s.md' % t, 'w') as f:
         f.write(mdown)
-    command = 'pandoc --ascii --katex --smart --section-divs --from markdown --filter pandoc-sidenote --to html5 --template=tufte --css /assets/tufte.css --css /assets/pandoc.css --css /assets/pandoc-solarized.css --css /assets/tufte-extra.css --output %(tempfile)s.html %(tempfile)s.md' % t
+    command = 'pandoc --ascii --katex --smart --section-divs --from markdown --filter pandoc-sidenote --to html5 --template=tufte --css %(baseurl)s/assets/tufte.css --css %(baseurl)s/assets/pandoc.css --css %(baseurl)s/assets/pandoc-solarized.css --css %(baseurl)s/assets/tufte-extra.css --output %(tempfile)s.html %(tempfile)s.md' % t
     print(command)
     os.system(command)
     processed_html = open('%(tempfile)s.html' %
@@ -62,11 +62,11 @@ def markdown_to_html(mdown):
     os.remove('%(tempfile)s.html' % t)
     os.remove('%(tempfile)s.md' % t)
     # Modify image links
-    processed_html = processed_html.replace('img src="','img src="/assets/img/')
+    processed_html = processed_html.replace('img src="','img src="%s/assets/img/' % baseurl)
     return processed_html
 
 
-def run(files, images):
+def run(files, images, baseurl):
     try:
         pandoc = which("pandoc")
     except:
@@ -109,6 +109,7 @@ sudo mv pandoc-sidenote /usr/local/bin
     chapters = []
     for chapter_filename in chapter_filenames:
         chapter = process_chapter_file(chapter_filename)
+        chapter['baseurl'] = baseurl
         chapters.append((chapter['python_date'], chapter))
 
     sorted_chapters = list(sorted(chapters, key=lambda tup: tup[0], reverse=False))
@@ -121,13 +122,13 @@ sudo mv pandoc-sidenote /usr/local/bin
         markdown_content = chapter['markdown']
         pagination = "### Keep reading...\n\n"
         if i > 0:
-            pagination += '&#x21AB;&nbsp;“<i><a href="/%(slug)s/">%(title)s</a></i>”' % sorted_chapters[i-1][1]             
+            pagination += '&#x21AB;&nbsp;“<i><a href="%(baseurl)s/%(slug)s/">%(title)s</a></i>”' % (sorted_chapters[i-1][1])            
         pagination += "&nbsp;&nbsp;&nbsp;<a href='/'>Home</a>&nbsp;&nbsp;&nbsp;"
         if i < len(chapters)-1:
-            pagination += '“<i><a href="/%(slug)s/">%(title)s</a></i>”&nbsp;&#x21AC;' % sorted_chapters[i+1][1] 
+            pagination += '“<i><a href="%(baseurl)s/%(slug)s/">%(title)s</a></i>”&nbsp;&#x21AC;' % (sorted_chapters[i+1][1])
         markdown_content += "\n\n" + pagination.strip()
         with open(os.path.join(slug_path, "index.html"), "w") as f:
-            f.write(markdown_to_html(markdown_content))
+            f.write(markdown_to_html(markdown_content,baseurl))
 
     # Generate index
     index_markdown = ""
@@ -136,12 +137,13 @@ sudo mv pandoc-sidenote /usr/local/bin
     last_date = ""
     for i, t in enumerate(sorted(chapters, key=lambda tup: tup[0], reverse=False)):
         t[1]['date'] = last_date
-        index_markdown += "\n\n<i>%(date)s</i>\t<h2>[%(title)s](%(slug)s)</h2>" % t[
+        t[1]['baseurl'] = baseurl
+        index_markdown += "\n\n<i>%(date)s</i>\t<h2>[%(title)s](%(baseurl)s/%(slug)s)</h2>" % t[
             1]
         last_date = t[1]['date_created']
     index_markdown += "\n\n<i>%s</i>\t<h2>&nbsp;</h2>" % last_date
     with open(os.path.join("public", "index.html"), "wt", encoding='latin1') as f:
-        f.write(markdown_to_html(index_markdown))
+        f.write(markdown_to_html(index_markdown,baseurl))
     os.remove('tufte.html5')
 
     # Resize images
@@ -154,8 +156,14 @@ def main():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--files',  help='folder to files')
     parser.add_argument('--images', help='folder to the images')
+    parser.add_argument('--url', help='baseurl')
+
 
     args = parser.parse_args()
     if args.files == None:
         print("Must specify where markdown files are, with\n\n--files location/to/markdown/files")
-    run(args.files, args.images)
+    if args.url == None:
+       args.url = ''
+    elif args.url[-1] == '/':
+       args.url = args.url[:-1]
+    run(args.files, args.images, args.url)
