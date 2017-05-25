@@ -95,7 +95,7 @@ sudo mv pandoc-sidenote /usr/local/bin
     for i, post in enumerate(config['post']):
         # Process slug
         if 'slug' not in post:
-            post['slug'] = post['filename'].split('.')
+            post['slug'] = post['filename'].split('.')[0].replace(' ', '-')
         if post['slug'][0] == '/':
             post['slug'] = post['slug'][1:]
         if post['slug'][-1] == '/':
