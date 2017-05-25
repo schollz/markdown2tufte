@@ -7,7 +7,7 @@ CMD ["/sbin/my_init"]
 
 # ...put your own build instructions here...
 RUN apt-get update
-RUN apt-get install -y git wget
+RUN apt-get install -y git wget imagemagick
 
 # Install pandoc
 RUN wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb

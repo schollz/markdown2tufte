@@ -93,7 +93,15 @@ sudo mv pandoc-sidenote /usr/local/bin
     if os.path.isdir("public/assets"):
         shutil.rmtree("public/assets")
     shutil.copytree(os.path.join(this_dir, 'assets'), 'public/assets')
+    if not os.path.isdir("public/assets/img"):
+        os.mkdir("public/assets/img")
     shutil.copyfile(os.path.join(this_dir, 'tufte.html5'), 'tufte.html5')
+
+    if images != '' and images != None:
+        image_files = os.listdir(images)
+        for f in image_files:
+            shutil.copyfile(os.path.join(images,f), os.path.join("public","assets","img",os.path.basename(f)))
+
 
     chapter_filenames = glob.glob(os.path.join(files, "*.md"))
     chapters = []
@@ -133,6 +141,11 @@ sudo mv pandoc-sidenote /usr/local/bin
     with open(os.path.join("public", "index.html"), "wt", encoding='latin1') as f:
         f.write(markdown_to_html(index_markdown))
     os.remove('tufte.html5')
+
+    # Resize images
+    os.chdir("public/assets/img")
+    os.system("mogrify -filter Triangle -define filter:support=2 -dither None -posterize 136 -quality 75 -define jpeg:fancy-upsampling=off -define png:compression-filter=5 -define png:compression-level=9 -define png:compression-strategy=1 -define png:exclude-chunk=all -interlace none -resize 450x337\> *")
+    os.chdir("../../../")
 
 
 def main():
