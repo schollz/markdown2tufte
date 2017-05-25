@@ -54,7 +54,7 @@ def markdown_to_html(mdown):
         string.ascii_uppercase + string.digits) for _ in range(10))}
     with open('%(tempfile)s.md' % t, 'w') as f:
         f.write(mdown)
-    command = 'pandoc --katex --smart --section-divs --from markdown+tex_math_single_backslash --filter pandoc-sidenote --to html5 --template=tufte --css /assets/tufte.css --css /assets/pandoc.css --css /assets/pandoc-solarized.css --css /assets/tufte-extra.css --output %(tempfile)s.html %(tempfile)s.md' % t
+    command = 'pandoc --ascii --katex --smart --section-divs --from markdown --filter pandoc-sidenote --to html5 --template=tufte --css /assets/tufte.css --css /assets/pandoc.css --css /assets/pandoc-solarized.css --css /assets/tufte-extra.css --output %(tempfile)s.html %(tempfile)s.md' % t
     print(command)
     os.system(command)
     processed_html = open('%(tempfile)s.html' %
@@ -101,14 +101,23 @@ sudo mv pandoc-sidenote /usr/local/bin
         chapter = process_chapter_file(chapter_filename)
         chapters.append((chapter['python_date'], chapter))
 
-    for sorted_chapter in sorted(chapters, key=lambda tup: tup[0], reverse=True):
+    sorted_chapters = list(sorted(chapters, key=lambda tup: tup[0], reverse=False))
+    for i, sorted_chapter in enumerate(sorted_chapters):
         chapter = sorted_chapter[1]
         slug_path = os.path.join("public", chapter['slug'])
         if not os.path.isdir(slug_path):
             print("Making", slug_path)
             os.makedirs(slug_path)
+        markdown_content = chapter['markdown']
+        pagination = "### Keep reading...\n\n"
+        if i > 0:
+            pagination += '&#x21AB;&nbsp;“<i><a href="/%(slug)s/">%(title)s</a></i>”' % sorted_chapters[i-1][1]             
+        pagination += "&nbsp;&nbsp;&nbsp;<a href='/'>Home</a>&nbsp;&nbsp;&nbsp;"
+        if i < len(chapters)-1:
+            pagination += '“<i><a href="/%(slug)s/">%(title)s</a></i>”&nbsp;&#x21AC;' % sorted_chapters[i+1][1] 
+        markdown_content += "\n\n" + pagination.strip()
         with open(os.path.join(slug_path, "index.html"), "w") as f:
-            f.write(markdown_to_html(chapter['markdown']))
+            f.write(markdown_to_html(markdown_content))
 
     # Generate index
     index_markdown = ""
