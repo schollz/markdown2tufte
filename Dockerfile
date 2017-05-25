@@ -1,3 +1,6 @@
+# docker build -t mdtotufte .
+# docker run -it -v `pwd`:/data mdtotufte /bin/bash -c "git pull && cd /data && tuftebook --files /data/posts && useradd $USER && chown -R $USER:$USER public/"
+
 FROM ubuntu:16.04
 
 RUN apt-get update
@@ -15,6 +18,7 @@ RUN mv pandoc-sidenote /usr/local/bin
 
 # Install book
 RUN apt-get install -y python3 python3-pip
+RUN python3 -m pip install maya toml
 RUN git clone https://github.com/schollz/book.git
 WORKDIR book
-RUN python3 -m pip install maya toml
+RUN python3 setup.py install

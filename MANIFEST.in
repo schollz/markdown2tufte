@@ -1,0 +1,7 @@
+include *.html5
+include assets/*.css
+include assets/et-book/et-book-bold-line-figures/*
+include assets/et-book/et-book-display-italic-old-style-figures/*
+include assets/et-book/et-book-roman-line-figures/*
+include assets/et-book/et-book-roman-old-style-figures/*
+include assets/et-book/et-book-semi-bold-old-style-figures/*
