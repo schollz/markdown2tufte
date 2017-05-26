@@ -20,7 +20,7 @@ RUN mv pandoc-sidenote /usr/local/bin
 
 # Install book
 RUN apt-get install -y python3 python3-pip
-RUN python3 -m pip install maya toml
+RUN python3 -m pip install toml
 RUN git clone https://github.com/schollz/markdown2tufte.git
 WORKDIR markdown2tufte
 RUN python3 setup.py install
