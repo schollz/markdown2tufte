@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc.css">
+  <link rel="stylesheet" href="/assets/pandoc-solarized.css">
+  <link rel="stylesheet" href="/assets/tufte-extra.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<article>
+<section id="markdown2tufte" class="level1">
+<h1>markdown2tufte</h1>
+<p>A static site generator for generating a Tufte-like website from markdown files.</p>
+<p>This is a dead-simple, &lt; 200LOC that leverages some nice Pandoc tools for creating a really nice looking website from markdown files.</p>
+<section id="quickstart-docker" class="level2">
+<h2>Quickstart (Docker)</h2>
+<pre><code>docker pull schollz/markdown2tufte
+wget https://raw.githubusercontent.com/schollz/markdown2tufte/master/examples/markdown2tufte.toml
+nano markdown2tufte.toml # specify your directory/files
+docker run -it -v `pwd`:/data markdown2tufte /bin/bash -c &quot;cd /data &amp;&amp; markdown2tufte &amp;&amp; useradd $USER &amp;&amp; chown -R $USER:$USER public/&quot;</code></pre>
+</section>
+<section id="requirements" class="level2">
+<h2>Requirements</h2>
+<section id="install-pandoc-version-1.18" class="level3">
+<h3>Install <code>pandoc</code> version 1.18</h3>
+<pre><code>wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb
+dpgk --install pandoc-1.18-1-amd64.deb</code></pre>
+</section>
+<section id="install-pandoc-sidenote" class="level3">
+<h3>Install <code>pandoc-sidenote</code></h3>
+<pre><code>wget https://github.com/schollz/pandoc-sidenote/releases/download/v1.0/pandoc-sidenote
+chmod +x pandoc-sidenote
+sudo mv pandoc-sidenote /usr/local/bin</code></pre>
+<p>Follow <a href="https://github.com/jez/pandoc-sidenote">these instructions</a> if you don&#8217;t want to run this binary.</p>
+</section>
+<section id="install-imagemagick" class="level3">
+<h3>Install <code>imagemagick</code></h3>
+<pre><code>apt-get install imagemagick</code></pre>
+</section>
+<section id="install-markdown2tufte" class="level3">
+<h3>Install <code>markdown2tufte</code></h3>
+<pre><code>pip install markdown2tufte</code></pre>
+</section>
+</section>
+<section id="setup" class="level2">
+<h2>Setup</h2>
+<p>Create a file <code>markdown2tufte.toml</code> with the data about your site. <a href="https://github.com/schollz/markdown2tufte/blob/master/examples/markdown2tufte.toml">Copy the example</a> and suite it to what you need.</p>
+</section>
+<section id="run" class="level2">
+<h2>Run</h2>
+<p>Just run</p>
+<pre><code>markdown2tufte </code></pre>
+<p>and now you have a static site in the <code>public/</code> folder with your website.</p>
+</section>
+<section id="acknowledgements" class="level2">
+<h2>Acknowledgements</h2>
+<p>This would not exist without:</p>
+<ul>
+<li><a href="https://github.com/jez/pandoc-sidenote">pandoc-sidenote by jez</a></li>
+<li><a href="https://github.com/jez/tufte-pandoc-css">tufte-pandoc-css by jez</a></li>
+<li><a href="http://pandoc.org/">pandoc</a></li>
+</ul>
+<section id="keep-reading" class="level3">
+<h3>Keep reading&#8230;</h3>
+<p>&#160;&#160;&#160;<a href='/'>Home</a>&#160;&#160;&#160;&#8220;<i><a href="/chapter1/">Chapter 1</a></i>&#8221;&#160;&#8620;</p>
+</section>
+</section>
+</section>
+</article>
+</body>
+</html>
