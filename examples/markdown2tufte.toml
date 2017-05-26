@@ -1,18 +1,31 @@
-# INDEX PAGE # 
-title = "Markdown To Tufte"
+##### INDEX PAGE ####
+
+title = "markdown2tufte"
 subtitle = "*The point of the essay is to change things.* - Edward Tufte"
 baseurl = ""
 
-# PATHS #
+#### PATHS ####
+
+# These paths should be relative to to where you run
+# markdown2tufte
 
 # Path to all images
 images = "images"
+
 # Path to all markdown
 files = "chapters"
 
-# POSTS #
+#### POSTS ####
 
-# Posts sorted the order they will appear 
+# Posts will appear in the order they are 
+# set here
+# 'slug' is an optional parameter (defaults to filename)
+
+[[post]]
+filename = "README.md"
+title = "Getting started"
+subtitle = "Read me first."
+
 [[post]]
 filename = "chapter1.md"
 title = "Chapter 1"

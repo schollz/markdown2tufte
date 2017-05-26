@@ -1,8 +1,8 @@
 from setuptools import setup
 
 setup(
-    name='tuftebook',
-    packages=['tuftebook'],
+    name='markdown2tufte',
+    packages=['markdown2tufte'],
     version='0.0.1',
     description='Generate a nice HTML Tufte-like book from markdown files',
     author='schollz',
@@ -12,7 +12,6 @@ setup(
     keywords=['html', 'markdown', 'tufte'],
     classifiers=[],
     install_requires=[
-        "maya",
         "toml",
     ],
     include_package_data=True,
@@ -22,6 +21,6 @@ setup(
     setup_requires=[],
     tests_require=[],
     entry_points={'console_scripts': [
-        'tuftebook = tuftebook.__main__:main',
+        'markdown2tufte = markdown2tufte.__main__:main',
     ], },
 )

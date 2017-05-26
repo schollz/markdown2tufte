@@ -29,7 +29,7 @@ Follow [these instructions](https://github.com/jez/pandoc-sidenote) if you don't
 apt-get install imagemagick
 ```
 
-### Install `markdown2tufte`
+### Install 
 
 ```
 pip install markdown2tufte
@@ -41,13 +41,11 @@ Create a file `markdown2tufte.toml` with the data about your site. [Copy the exa
 
 ## Run 
 
-Just run
-
 ```
 markdown2tufte 
 ```
 
-and now you have a static site in the `public/` folder with your website.
+Now you have a static site in the `public/` folder with your website.
 
 ## Acknowledgements
 

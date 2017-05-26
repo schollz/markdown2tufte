@@ -8,7 +8,6 @@ import random
 import string
 import argparse
 
-import maya
 import toml
 
 
@@ -145,8 +144,11 @@ def main():
 
     args = parser.parse_args()
     if args.config == None:
-        print("Must specify config file")
-        return
+        if os.path.isfile('markdown2tufte.toml'):
+            args.config = 'markdown2tufte.toml'
+        else:
+            print("Must specify config file")
+            return
     run(args.config)
 
 if __name__ == "__main__":

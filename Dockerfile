@@ -1,5 +1,5 @@
-# docker build -t mdtotufte .
-# docker run -it -v `pwd`:/data mdtotufte /bin/bash -c "cd /data && tuftebook --files examples/chapters --images examples/images && useradd $USER && chown -R $USER:$USER public/"
+# docker build -t markdown2tufte .
+# docker run -it -v `pwd`:/data markdown2tufte /bin/bash -c "cd /data && markdown2tufte && useradd $USER && chown -R $USER:$USER public/"
 FROM phusion/baseimage:0.9.22
 
 # Use baseimage-docker's init system.
@@ -21,8 +21,8 @@ RUN mv pandoc-sidenote /usr/local/bin
 # Install book
 RUN apt-get install -y python3 python3-pip
 RUN python3 -m pip install maya toml
-RUN git clone https://github.com/schollz/book.git
-WORKDIR book
+RUN git clone https://github.com/schollz/markdown2tufte.git
+WORKDIR markdown2tufte
 RUN python3 setup.py install
 
 # Clean up APT when done.
