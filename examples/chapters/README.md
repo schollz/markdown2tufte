@@ -4,7 +4,17 @@ A static site generator for generating a Tufte-like website from markdown files.
 
 This is a dead-simple, < 200LOC that leverages some nice Pandoc tools for creating a really nice looking website from markdown files.
 
+## Quickstart (Docker)
+
+```
+docker pull schollz/markdown2tufte
+wget https://raw.githubusercontent.com/schollz/markdown2tufte/master/examples/markdown2tufte.toml
+nano markdown2tufte.toml # specify your directory/files
+docker run -it -v `pwd`:/data markdown2tufte /bin/bash -c "cd /data && markdown2tufte && useradd $USER && chown -R $USER:$USER public/"
+```
+
 ## Requirements
+
 
 ### Install `pandoc` version 1.18
 
@@ -29,7 +39,7 @@ Follow [these instructions](https://github.com/jez/pandoc-sidenote) if you don't
 apt-get install imagemagick
 ```
 
-### Install 
+### Install `markdown2tufte`
 
 ```
 pip install markdown2tufte
@@ -41,11 +51,13 @@ Create a file `markdown2tufte.toml` with the data about your site. [Copy the exa
 
 ## Run 
 
+Just run
+
 ```
 markdown2tufte 
 ```
 
-Now you have a static site in the `public/` folder with your website.
+and now you have a static site in the `public/` folder with your website.
 
 ## Acknowledgements
 
