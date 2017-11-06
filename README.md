@@ -7,14 +7,14 @@ This is a dead-simple, < 200LOC that leverages some nice Pandoc tools for creati
 ## Quickstart (Docker)
 
 ```
+git clone https://github.com/schollz/markdown2tufte.git
+cd markdown2tufte/examples
 docker pull schollz/markdown2tufte
-wget https://raw.githubusercontent.com/schollz/markdown2tufte/master/examples/markdown2tufte.toml
-nano markdown2tufte.toml # specify your directory/files
 docker run -it -v `pwd`:/data schollz/markdown2tufte /bin/bash -c "cd /data && markdown2tufte && useradd $USER && chown -R $USER:$USER public/"
+cd public && python3 -m http.server
 ```
 
-## Requirements
-
+## Install without Docker
 
 ### Install `pandoc` version 1.18
 
