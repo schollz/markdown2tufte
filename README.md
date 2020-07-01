@@ -20,7 +20,7 @@ cd public && python3 -m http.server
 
 ```
 wget https://github.com/jgm/pandoc/releases/download/1.18/pandoc-1.18-1-amd64.deb
-dpgk --install pandoc-1.18-1-amd64.deb
+dpkg --install pandoc-1.18-1-amd64.deb
 ```
 
 ### Install `pandoc-sidenote`
